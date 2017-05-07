@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"../../logger"
+	"../logger"
 	"../helpers"
 )
 

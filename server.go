@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"./logger"
+	"./server/logger"
 	"./server/handlers"
 	"./server/helpers"
 )

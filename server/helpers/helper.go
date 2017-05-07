@@ -9,7 +9,7 @@ import (
 	"strings"
 	txtTemplate "text/template"
 	"time"
-	"../../logger"
+	"../logger"
 )
 
 var templatePath = "data/templates/"

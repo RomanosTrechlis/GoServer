@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"../../logger"
+	"../logger"
 	"../helpers"
 )
 
