@@ -1,7 +1,4 @@
 // Project's goal is to assist me in learning golang.
-// https://golang.org/doc/articles/wiki/
-// https://larry-price.com/blog/2014/01/07/finishing-the-google-go-writing-web-applications-tutorial
-// http://blog.will3942.com/creating-blog-go
 package main
 
 import (
