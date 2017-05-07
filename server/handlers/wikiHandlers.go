@@ -3,6 +3,8 @@ package handlers
 import (
 	"html/template"
 	"net/http"
+
+	"../../logger"
 	"../helpers"
 )
 
@@ -38,6 +40,7 @@ func SaveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	p := &helpers.Page{Title: title, Body: []byte(body)}
 	err := p.Save()
 	if err != nil {
+		logger.Warning.Println("Error:", http.StatusInternalServerError)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	http.Redirect(w, r, viewPath+title, http.StatusFound)
@@ -46,9 +49,11 @@ func SaveHandler(w http.ResponseWriter, r *http.Request, title string) {
 // wrapper function
 func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		logger.Info.Println("path:", r.URL.Path)
 		m := helpers.WikiValidPath.FindStringSubmatch(r.URL.Path)
 		if m == nil {
 			http.NotFound(w, r)
+			logger.Warning.Println("url not found")
 			return
 		}
 		fn(w, r, m[2])

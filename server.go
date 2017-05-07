@@ -2,12 +2,17 @@
 package main
 
 import (
+	"io/ioutil"
 	"net/http"
+	"os"
+
+	"./logger"
 	"./server/handlers"
 	"./server/helpers"
 )
 
 func main() {
+	logger.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
 	// caching templates
 	helpers.ReCacheTemplates()
 
@@ -25,5 +30,6 @@ func main() {
 
 	// allows css and js to be imported into pages
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
+	logger.Info.Println("Listening at port 8080...")
 	http.ListenAndServe(":8080", nil)
 }

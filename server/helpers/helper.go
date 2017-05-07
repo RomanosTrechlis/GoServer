@@ -9,6 +9,7 @@ import (
 	"strings"
 	txtTemplate "text/template"
 	"time"
+	"../../logger"
 )
 
 var templatePath = "data/templates/"
@@ -40,6 +41,7 @@ func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
 func RenderTemplate(w http.ResponseWriter, tmpl string, p interface{}) {
 	err := Templates.ExecuteTemplate(w, tmpl+".html", p)
 	if err != nil {
+		logger.Warning.Println("Error:", http.StatusInternalServerError)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
