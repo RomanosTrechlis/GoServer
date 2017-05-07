@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../../resources/css/blog.css"/>
+    <title>Romanos' Blog</title>
+</head>
+<body>
+<!-- new post template -->
+<div class="header">
+    <!--<div class="title">
+        <h1><a href="/blog/">My Blog</a></h1>
+    </div>-->
+    <div class="menu">
+        <ul>
+            <li><a href="../admin/blog/">Blog</a></li>
+            <li><a href="../admin/blog/new" class="active">New Blog Post</a></li>
+            <li><a href="../admin/recache">Re Cache Templates</a></li>
+        </ul>
+    </div>
+</div>
+
+<div>
+    <form action="/admin/blog/save/{{.Title}}" method="POST">
+        <div><textarea name="post" rows="20" cols="80">{{printf "%s" .Post}}</textarea></div>
+        <div><input type="submit" value="Save"></div>
+    </form>
+</div>
+</body>
+</html>

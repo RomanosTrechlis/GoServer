@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Wiki made using Golang</title>
+</head>
+<body>
+    <!-- edit template -->
+    <h1>Editing {{.Title}}</h1>
+
+    <form action="/wiki/save/{{.Title}}" method="POST">
+        <div><textarea name="body" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
+        <div><input type="submit" value="Save"></div>
+    </form>
+</body>
+</html>

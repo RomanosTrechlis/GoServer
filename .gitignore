@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# folders
+data/pages/
+data/posts/
+.idea/
