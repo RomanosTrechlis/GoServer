@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"./server/logger"
 	"./server/handlers"
 	"./server/helpers"
+	"./server/logger"
 )
 
 func main() {
