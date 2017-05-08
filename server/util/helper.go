@@ -58,7 +58,7 @@ func GetPostName(r *http.Request, regexp *regexp.Regexp) string {
 	return title
 }
 
-func LoadConfig(configPath string) {
+func LoadConfig(configPath string, loadTemplates bool) {
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		logger.Error.Println("Cannot load configuration file.")
@@ -69,6 +69,13 @@ func LoadConfig(configPath string) {
 	if err != nil {
 		logger.Error.Println("Failed to parse json file.")
 	}
+	if !loadTemplates {
+		return
+	}
+	LoadTemplates()
+}
+
+func LoadTemplates() {
 	Templates = template.Must(template.ParseGlob(structs.Config.Templates + "*"))
 	TextTemplates = txtTemplate.Must(txtTemplate.ParseGlob(structs.Config.TextTemplates + "*"))
 }

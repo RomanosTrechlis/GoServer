@@ -6,20 +6,25 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/RomanosTrechlis/GoServer/server/wiki"
 	"github.com/RomanosTrechlis/GoServer/server/admin"
-	"github.com/RomanosTrechlis/GoServer/server/util"
-
-	"github.com/RomanosTrechlis/GoServer/server/logger"
 	"github.com/RomanosTrechlis/GoServer/server/blog"
+	"github.com/RomanosTrechlis/GoServer/server/logger"
 	structs "github.com/RomanosTrechlis/GoServer/server/model"
+	"github.com/RomanosTrechlis/GoServer/server/util"
+	"github.com/RomanosTrechlis/GoServer/server/wiki"
 )
 
-func main() {
+func initialize() {
 	logger.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
+
+	// setting the configuration file
 	structs.ConfigFileName = "config.json"
-	// caching templates
-	helpers.LoadConfig(structs.ConfigFileName)
+	// load configuration and chache templates
+	helpers.LoadConfig(structs.ConfigFileName, true)
+}
+
+func main() {
+	initialize()
 
 	// routes
 	// for a wiki we need three base routes view, edit, save
