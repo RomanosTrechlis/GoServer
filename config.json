@@ -1,0 +1,6 @@
+{
+  "Templates": "data/templates/",
+  "TextTemplates": "data/textTemplates/",
+  "Pages": "data/pages/",
+  "Posts": "data/posts/"
+}

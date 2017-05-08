@@ -2,7 +2,7 @@ body {
     margin: 10px 20%;
 }
 
-ul {
+.menu ul {
     list-style: none;
     background-color: #444;
     text-align: center;
@@ -10,7 +10,7 @@ ul {
     margin: 0;
 }
 
-li {
+.menu li {
     font-family: 'Oswald', sans-serif;
     font-size: 1.2em;
     line-height: 40px;

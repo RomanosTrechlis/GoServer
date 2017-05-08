@@ -1,11 +1,12 @@
-package handlers
+package wiki
 
 import (
 	"html/template"
 	"net/http"
 
-	"../logger"
-	"../helpers"
+	"github.com/RomanosTrechlis/GoServer/server/util"
+	"github.com/RomanosTrechlis/GoServer/server/logger"
+	strucs "github.com/RomanosTrechlis/GoServer/server/model"
 )
 
 var viewPath = "/wiki/view/"
@@ -17,7 +18,7 @@ func ViewHandler(w http.ResponseWriter, r *http.Request, title string) {
 	p, err := helpers.LoadPage(title)
 	// if page doesn't exists it should redirect to the edit page
 	if err != nil {
-		http.Redirect(w, r, editPath+title, http.StatusFound)
+		http.Redirect(w, r, editPath + title, http.StatusFound)
 		return
 	}
 
@@ -29,7 +30,7 @@ func ViewHandler(w http.ResponseWriter, r *http.Request, title string) {
 func EditHandler(w http.ResponseWriter, r *http.Request, title string) {
 	p, err := helpers.LoadPage(title)
 	if err != nil {
-		p = &helpers.Page{Title: title}
+		p = &strucs.Page{Title: title}
 	}
 	helpers.RenderTemplate(w, "edit", p)
 }
@@ -37,13 +38,13 @@ func EditHandler(w http.ResponseWriter, r *http.Request, title string) {
 //  handle URLs prefixed with "/save/"
 func SaveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	body := r.FormValue("body")
-	p := &helpers.Page{Title: title, Body: []byte(body)}
+	p := &strucs.Page{Title: title, Body: []byte(body)}
 	err := p.Save()
 	if err != nil {
 		logger.Warning.Println("Error:", http.StatusInternalServerError)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	http.Redirect(w, r, viewPath+title, http.StatusFound)
+	http.Redirect(w, r, viewPath + title, http.StatusFound)
 }
 
 // wrapper function

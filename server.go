@@ -6,27 +6,32 @@ import (
 	"net/http"
 	"os"
 
-	"./server/handlers"
-	"./server/helpers"
-	"./server/logger"
+	"github.com/RomanosTrechlis/GoServer/server/wiki"
+	"github.com/RomanosTrechlis/GoServer/server/admin"
+	"github.com/RomanosTrechlis/GoServer/server/util"
+
+	"github.com/RomanosTrechlis/GoServer/server/logger"
+	"github.com/RomanosTrechlis/GoServer/server/blog"
+	structs "github.com/RomanosTrechlis/GoServer/server/model"
 )
 
 func main() {
 	logger.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
+	structs.ConfigFileName = "config.json"
 	// caching templates
-	helpers.ReCacheTemplates()
+	helpers.LoadConfig(structs.ConfigFileName)
 
 	// routes
 	// for a wiki we need three base routes view, edit, save
-	http.HandleFunc("/", handlers.RootHandler)
-	http.HandleFunc("/wiki/view/", handlers.MakeHandler(handlers.ViewHandler))
-	http.HandleFunc("/wiki/edit/", handlers.MakeHandler(handlers.EditHandler))
-	http.HandleFunc("/wiki/save/", handlers.MakeHandler(handlers.SaveHandler))
+	http.HandleFunc("/", blog.RootHandler)
+	http.HandleFunc("/wiki/view/", wiki.MakeHandler(wiki.ViewHandler))
+	http.HandleFunc("/wiki/edit/", wiki.MakeHandler(wiki.EditHandler))
+	http.HandleFunc("/wiki/save/", wiki.MakeHandler(wiki.SaveHandler))
 
-	http.HandleFunc("/blog/", handlers.BlogHandler)
-	http.HandleFunc("/admin/blog/new/", handlers.NewBlogHandler)
-	http.HandleFunc("/admin/blog/save/", handlers.SaveNewBlogHandler)
-	http.HandleFunc("/admin/recache/", handlers.ReCacheHandler)
+	http.HandleFunc("/blog/", blog.BlogHandler)
+	http.HandleFunc("/admin/blog/new/", admin.NewBlogHandler)
+	http.HandleFunc("/admin/blog/save/", admin.SaveNewBlogHandler)
+	http.HandleFunc("/admin/recache/", admin.ReCacheHandler)
 
 	// allows css and js to be imported into pages
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))

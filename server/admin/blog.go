@@ -1,23 +1,25 @@
-package handlers
+package admin
 
 import (
 	"net/http"
 
-	"../logger"
-	"../helpers"
+
+	"github.com/RomanosTrechlis/GoServer/server/logger"
+	"github.com/RomanosTrechlis/GoServer/server/util"
+	"github.com/RomanosTrechlis/GoServer/server/admin/util"
 )
 
 var blogPath = "/blog/"
 
 func NewBlogHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info.Println("path:", r.URL.Path)
-	p := helpers.CreateMarkdownPost()
+	p := util.CreateMarkdownPost()
 	helpers.RenderTemplate(w, "newPost", p)
 }
 
 func SaveNewBlogHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info.Println("path:", r.URL.Path)
-	p := helpers.BuildMarkdownPost(r)
+	p := util.BuildMarkdownPost(r)
 	err := p.Save()
 	if err != nil {
 		logger.Warning.Println("Error:", http.StatusInternalServerError)
@@ -26,8 +28,4 @@ func SaveNewBlogHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, blogPath+p.Title, http.StatusFound)
 }
 
-func ReCacheHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Info.Println("path:", r.URL.Path)
-	helpers.ReCacheTemplates()
-	http.Redirect(w, r, blogPath, http.StatusFound)
-}
+
