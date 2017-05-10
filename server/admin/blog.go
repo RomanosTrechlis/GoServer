@@ -12,13 +12,13 @@ import (
 var blogPath = "/blog/"
 
 func NewBlogHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Info.Println("path:", r.URL.Path)
+	logger.Debug.Println(r.URL.Path)
 	p := util.CreateMarkdownPost()
 	helpers.RenderTemplate(w, "newPost", p)
 }
 
 func SaveNewBlogHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Info.Println("path:", r.URL.Path)
+	logger.Debug.Println(r.URL.Path)
 	p := util.BuildMarkdownPost(r)
 	err := p.Save()
 	if err != nil {

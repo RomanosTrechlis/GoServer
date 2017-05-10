@@ -48,9 +48,9 @@ func SaveHandler(w http.ResponseWriter, r *http.Request, title string) {
 }
 
 // wrapper function
-func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		logger.Info.Println("path:", r.URL.Path)
+func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		logger.Debug.Println(r.URL.Path)
 		m := helpers.WikiValidPath.FindStringSubmatch(r.URL.Path)
 		if m == nil {
 			http.NotFound(w, r)
@@ -58,5 +58,5 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 			return
 		}
 		fn(w, r, m[2])
-	}
+	})
 }

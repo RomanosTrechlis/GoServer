@@ -15,7 +15,13 @@ import (
 )
 
 func initialize() {
-	logger.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
+	path := os.Getwd() + "\\logs\\"
+	fileName := "temp.log"
+	file, err := os.OpenFile(path + fileName, os.O_RDONLY | os.O_CREATE, 0666)
+	logger.Init(ioutil.Discard, file, file, os.Stdout, os.Stderr)
+	if err != nil {
+		logger.Warning.Println(err.Error())
+	}
 
 	// setting the configuration file
 	structs.ConfigFileName = "config.json"
@@ -26,20 +32,21 @@ func initialize() {
 func main() {
 	initialize()
 
+	mx := http.NewServeMux()
 	// routes
 	// for a wiki we need three base routes view, edit, save
-	http.HandleFunc("/", blog.RootHandler)
-	http.HandleFunc("/wiki/view/", wiki.MakeHandler(wiki.ViewHandler))
-	http.HandleFunc("/wiki/edit/", wiki.MakeHandler(wiki.EditHandler))
-	http.HandleFunc("/wiki/save/", wiki.MakeHandler(wiki.SaveHandler))
+	mx.HandleFunc("/", blog.RootHandler)
+	mx.Handle("/wiki/view/", wiki.MakeHandler(wiki.ViewHandler))
+	mx.Handle("/wiki/edit/", wiki.MakeHandler(wiki.EditHandler))
+	mx.Handle("/wiki/save/", wiki.MakeHandler(wiki.SaveHandler))
 
-	http.HandleFunc("/blog/", blog.BlogHandler)
-	http.HandleFunc("/admin/blog/new/", admin.NewBlogHandler)
-	http.HandleFunc("/admin/blog/save/", admin.SaveNewBlogHandler)
-	http.HandleFunc("/admin/recache/", admin.ReCacheHandler)
+	mx.HandleFunc("/blog/", blog.BlogHandler)
+	mx.HandleFunc("/admin/blog/new/", admin.NewBlogHandler)
+	mx.HandleFunc("/admin/blog/save/", admin.SaveNewBlogHandler)
+	mx.HandleFunc("/admin/recache/", admin.ReCacheHandler)
 
 	// allows css and js to be imported into pages
-	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
+	mx.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	logger.Info.Println("Listening at port 8080...")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", mx)
 }
