@@ -27,3 +27,4 @@ _testmain.go
 data/pages/
 data/posts/
 .idea/
+logs/
