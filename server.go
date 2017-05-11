@@ -12,16 +12,17 @@ import (
 	structs "github.com/RomanosTrechlis/GoServer/server/model"
 	"github.com/RomanosTrechlis/GoServer/server/util"
 	"github.com/RomanosTrechlis/GoServer/server/wiki"
+	"github.com/RomanosTrechlis/GoServer/server"
 )
 
 func initialize() {
-	path := os.Getwd() + "\\logs\\"
+	/*path := os.Getwd() + "\\logs\\"
 	fileName := "temp.log"
-	file, err := os.OpenFile(path + fileName, os.O_RDONLY | os.O_CREATE, 0666)
-	logger.Init(ioutil.Discard, file, file, os.Stdout, os.Stderr)
-	if err != nil {
+	file, err := os.OpenFile(path + fileName, os.O_RDONLY | os.O_CREATE, 0666)*/
+	logger.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
+	/*if err != nil {
 		logger.Warning.Println(err.Error())
-	}
+	}*/
 
 	// setting the configuration file
 	structs.ConfigFileName = "config.json"
@@ -36,7 +37,8 @@ func main() {
 	// routes
 	// for a wiki we need three base routes view, edit, save
 	mx.HandleFunc("/", blog.RootHandler)
-	mx.Handle("/wiki/view/", wiki.MakeHandler(wiki.ViewHandler))
+	mx.Handle("/wiki/view/", server.Adapt(wiki.MakeHandler(wiki.ViewHandler), wiki.WikiAdapter()))
+	//mx.Handle("/wiki/view/", wiki.WikiAdapter()(wiki.MakeHandler(wiki.ViewHandler)))
 	mx.Handle("/wiki/edit/", wiki.MakeHandler(wiki.EditHandler))
 	mx.Handle("/wiki/save/", wiki.MakeHandler(wiki.SaveHandler))
 

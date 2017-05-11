@@ -5,8 +5,9 @@ import (
 	"net/http"
 
 	"github.com/RomanosTrechlis/GoServer/server/util"
-	"github.com/RomanosTrechlis/GoServer/server/logger"
 	strucs "github.com/RomanosTrechlis/GoServer/server/model"
+	"github.com/RomanosTrechlis/GoServer/server/logger"
+	"github.com/RomanosTrechlis/GoServer/server"
 )
 
 var viewPath = "/wiki/view/"
@@ -59,4 +60,19 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 		}
 		fn(w, r, m[2])
 	})
+}
+
+func WikiAdapter() server.Adapter {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			logger.Debug.Println(r.URL.Path)
+			m := helpers.WikiValidPath.FindStringSubmatch(r.URL.Path)
+			if m == nil {
+				http.NotFound(w, r)
+				logger.Warning.Println("url not found")
+				return
+			}
+			h.ServeHTTP(w, r)
+		})
+	}
 }
