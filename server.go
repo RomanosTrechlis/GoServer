@@ -13,7 +13,14 @@ import (
 	"github.com/RomanosTrechlis/GoServer/server/util"
 	"github.com/RomanosTrechlis/GoServer/server/wiki"
 	"github.com/RomanosTrechlis/GoServer/server"
+
+	"github.com/boltdb/bolt"
+
+	"time"
+	"log"
+	"errors"
 )
+
 
 func initialize() {
 	/*path := os.Getwd() + "\\logs\\"
@@ -28,6 +35,49 @@ func initialize() {
 	structs.ConfigFileName = "config.json"
 	// load configuration and chache templates
 	helpers.LoadConfig(structs.ConfigFileName, true)
+
+	db, err := bolt.Open("my.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
+	if err != nil {
+		logger.Warning.Println(err)
+	}
+	defer db.Close()
+	world := []byte("world")
+	key := []byte("hello")
+	value := []byte("Hello World!")
+	// store some data
+	err = db.Update(func(tx *bolt.Tx) error {
+		bucket, err := tx.CreateBucketIfNotExists(world)
+		if err != nil {
+			return err
+		}
+
+		err = bucket.Put(key, value)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		logger.Warning.Println(err)
+	}
+	// retrieve the data
+	err = db.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket(world)
+		if bucket == nil {
+			logger.Warning.Println("Bucket %q not found!", world)
+			return errors.New("Error")
+		}
+
+		val := bucket.Get(key)
+		logger.Info.Println(string(val))
+
+		return nil
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
