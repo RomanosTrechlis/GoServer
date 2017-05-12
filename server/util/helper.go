@@ -1,4 +1,4 @@
-package helpers
+package util
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 
 	"github.com/RomanosTrechlis/GoServer/server/logger"
-	structs "github.com/RomanosTrechlis/GoServer/server/model"
+	"github.com/RomanosTrechlis/GoServer/server"
 )
 
 var templatePath = "data/templates/"
@@ -21,13 +21,6 @@ var WikiValidPath = regexp.MustCompile(
 var Templates = template.Must(template.ParseFiles(
 	templatePath + "edit.html", templatePath + "view.html", templatePath + "blog.html"))
 var TextTemplates = txtTemplate.Must(txtTemplate.ParseFiles(textTemplatePath + "post.html"))
-
-var BlogValidPath = regexp.MustCompile(
-	"^/blog/([a-zA-Z0-9_]+)$")
-var adminNewBlogValidPath = regexp.MustCompile(
-	"^/admin/blog/new/([a-zA-Z0-9_]+)$")
-var adminSaveBlogValidPath = regexp.MustCompile(
-	"^/admin/blog/save/([a-zA-Z0-9_]+)$")
 
 // validates path
 func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
@@ -47,17 +40,6 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, p interface{}) {
 	}
 }
 
-func GetPostName(r *http.Request, regexp *regexp.Regexp) string {
-	m := regexp.FindStringSubmatch(r.URL.Path)
-	var title string
-	if m == nil {
-		title = ""
-	} else {
-		title = m[len(m) - 1]
-	}
-	return title
-}
-
 func LoadConfig(configPath string, loadTemplates bool) {
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
@@ -65,7 +47,7 @@ func LoadConfig(configPath string, loadTemplates bool) {
 		return
 	}
 
-	err = structs.Config.ParseJSON(data)
+	err = server.Config.ParseJSON(data)
 	if err != nil {
 		logger.Error.Println("Failed to parse json file.")
 	}
@@ -76,16 +58,6 @@ func LoadConfig(configPath string, loadTemplates bool) {
 }
 
 func LoadTemplates() {
-	Templates = template.Must(template.ParseGlob(structs.Config.Templates + "*"))
-	TextTemplates = txtTemplate.Must(txtTemplate.ParseGlob(structs.Config.TextTemplates + "*"))
+	Templates = template.Must(template.ParseGlob(server.Config.Templates + "*"))
+	TextTemplates = txtTemplate.Must(txtTemplate.ParseGlob(server.Config.TextTemplates + "*"))
 }
-
-func LoadPage(title string) (*structs.Page, error) {
-	filename := structs.Config.Pages + title + ".txt"
-	body, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	return &structs.Page{Title: title, Body: body}, nil
-}
-

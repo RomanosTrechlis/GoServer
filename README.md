@@ -4,9 +4,14 @@ Web application server in go.
 
 ## 0. Update Log
 
+### v0.2.1
+
++ flat out packages
++ refactor code
+
 #### v0.2.0 updates
 
-+ refactored code by feature
++ refactor code by feature
 + add config file in json format
 
 #### v0.1.0 updates
@@ -24,6 +29,7 @@ It is based upon several great tutorials found on the net.
 * [will3942 creating a blog](http://blog.will3942.com/creating-blog-go)
 * [goinggo using log](https://www.goinggo.net/2013/11/using-log-package-in-go.html)
 * [@matryer](https://medium.com/@matryer/writing-middleware-in-golang-and-how-go-makes-it-so-much-fun-4375c1246e81)
+* [npf.io intro to boltdb](https://npf.io/2014/07/intro-to-boltdb-painless-performant-persistence/)
 
 
 ## 2. TODO

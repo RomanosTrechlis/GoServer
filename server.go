@@ -9,7 +9,6 @@ import (
 	"github.com/RomanosTrechlis/GoServer/server/admin"
 	"github.com/RomanosTrechlis/GoServer/server/blog"
 	"github.com/RomanosTrechlis/GoServer/server/logger"
-	structs "github.com/RomanosTrechlis/GoServer/server/model"
 	"github.com/RomanosTrechlis/GoServer/server/util"
 	"github.com/RomanosTrechlis/GoServer/server/wiki"
 	"github.com/RomanosTrechlis/GoServer/server"
@@ -32,9 +31,9 @@ func initialize() {
 	}*/
 
 	// setting the configuration file
-	structs.ConfigFileName = "config.json"
+	server.ConfigFileName = "config.json"
 	// load configuration and chache templates
-	helpers.LoadConfig(structs.ConfigFileName, true)
+	util.LoadConfig(server.ConfigFileName, true)
 
 	db, err := bolt.Open("my.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
