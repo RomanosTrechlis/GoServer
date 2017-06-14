@@ -98,9 +98,9 @@ func main() {
 	mx.HandleFunc("/blog/", server.Chain(blog.BlogHandler, admin.Logging()))
 	mx.HandleFunc("/blog/{^[a-zA-Z0-9_.-]*$}", server.Chain(blog.BlogHandler, admin.Logging()))
 
-	mx.HandleFunc("/admin/blog/new/", server.Chain(admin.NewBlogHandler, admin.Logging(), admin.Authenticate()))
-	mx.HandleFunc("/admin/blog/save/", server.Chain(admin.SaveNewBlogHandler, admin.Logging(), admin.Authenticate()))
-	mx.HandleFunc("/admin/recache/", server.Chain(admin.ReCacheHandler, admin.Logging(), admin.Authenticate()))
+	mx.HandleFunc("/admin/blog/new/", server.Chain(admin.NewBlogHandler, admin.Authenticate(), admin.Logging()))
+	mx.HandleFunc("/admin/blog/save/", server.Chain(admin.SaveNewBlogHandler, admin.Authenticate(), admin.Logging()))
+	mx.HandleFunc("/admin/recache/", server.Chain(admin.ReCacheHandler, admin.Authenticate(), admin.Logging()))
 
 	mx.HandleFunc("/login/", server.Chain(admin.LoginGet, admin.Logging())).Methods("GET")
 	mx.HandleFunc("/login/", server.Chain(admin.LoginPost, admin.Logging())).Methods("POST")
