@@ -14,6 +14,7 @@ import (
 	"github.com/RomanosTrechlis/GoServer/server"
 
 	"github.com/boltdb/bolt"
+	"github.com/gorilla/mux"
 
 	"time"
 	"log"
@@ -80,21 +81,30 @@ func initialize() {
 }
 
 func main() {
+
+
+
 	initialize()
 
-	mx := http.NewServeMux()
+	mx := mux.NewRouter()
 	// routes
 	// for a wiki we need three base routes view, edit, save
 	mx.HandleFunc("/", blog.RootHandler)
-	mx.Handle("/wiki/view/", server.Adapt(wiki.MakeHandler(wiki.ViewHandler), wiki.WikiAdapter()))
+	mx.Handle("/wiki/view/", server.Adapt(wiki.MakeHandler(wiki.ViewHandler), wiki.WikiAdapter())) // test
 	//mx.Handle("/wiki/view/", wiki.WikiAdapter()(wiki.MakeHandler(wiki.ViewHandler)))
 	mx.Handle("/wiki/edit/", wiki.MakeHandler(wiki.EditHandler))
 	mx.Handle("/wiki/save/", wiki.MakeHandler(wiki.SaveHandler))
 
-	mx.HandleFunc("/blog/", blog.BlogHandler)
-	mx.HandleFunc("/admin/blog/new/", admin.NewBlogHandler)
-	mx.HandleFunc("/admin/blog/save/", admin.SaveNewBlogHandler)
-	mx.HandleFunc("/admin/recache/", admin.ReCacheHandler)
+	mx.HandleFunc("/blog/", admin.Chain(blog.BlogHandler, admin.Logging()))
+	mx.HandleFunc("/blog/{^[a-zA-Z0-9_.-]*$}", admin.Chain(blog.BlogHandler, admin.Logging()))
+
+	mx.HandleFunc("/admin/blog/new/", admin.Chain(admin.NewBlogHandler, admin.Logging(), admin.Authenticate()))
+	mx.HandleFunc("/admin/blog/save/", admin.Chain(admin.SaveNewBlogHandler, admin.Logging(), admin.Authenticate()))
+	mx.HandleFunc("/admin/recache/", admin.Chain(admin.ReCacheHandler, admin.Logging(), admin.Authenticate()))
+
+	mx.HandleFunc("/login/", admin.Chain(admin.LoginGet, admin.Logging())).Methods("GET")
+	mx.HandleFunc("/login/", admin.Chain(admin.LoginPost, admin.Logging())).Methods("POST")
+	mx.HandleFunc("/logout/", admin.Chain(admin.Logout, admin.Logging()))
 
 	// allows css and js to be imported into pages
 	mx.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))

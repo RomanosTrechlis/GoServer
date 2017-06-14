@@ -28,3 +28,6 @@ data/pages/
 data/posts/
 .idea/
 logs/
+
+# files
+my.db

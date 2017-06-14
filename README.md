@@ -1,8 +1,16 @@
 # GoServer
 
-Web application server in go.
+Web application server in golang.
 
-## 0. Update Log
+## 0. Change Log
+
+### v0.3.0
+
++ authentication with cookies
++ middleware for authentication
++ middleware for logging
++ chaining multiple middleware
++ use of gorilla mux for routing
 
 ### v0.2.1
 
@@ -24,6 +32,7 @@ This is a Web Application that provides blog and wiki functionality.
 
 It is based upon several great tutorials found on the net.
 
+* [gowebexamples](https://gowebexamples.github.io/)
 * [golang wiki](https://golang.org/doc/articles/wiki/)
 * [larry price finishing wiki tutorial](https://larry-price.com/blog/2014/01/07/finishing-the-google-go-writing-web-applications-tutorial)
 * [will3942 creating a blog](http://blog.will3942.com/creating-blog-go)
@@ -34,12 +43,12 @@ It is based upon several great tutorials found on the net.
 
 ## 2. TODO
 
+1. Add a database
+1. Make a Registration feature
 1. Add css for wiki
-2. Expand configuration
-3. Learn how to package files
-4. Add a database
-5. Add authentication
-6. Keep refactoring code
+1. Expand configuration
+1. Learn how to package files
+1. Keep refactoring code
 
 ## 3. Contact information
 *Romanos Trechlis* @r_trechlis

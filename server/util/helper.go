@@ -61,3 +61,5 @@ func LoadTemplates() {
 	Templates = template.Must(template.ParseGlob(server.Config.Templates + "*"))
 	TextTemplates = txtTemplate.Must(txtTemplate.ParseGlob(server.Config.TextTemplates + "*"))
 }
+
+

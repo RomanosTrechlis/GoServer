@@ -3,7 +3,6 @@ package admin
 import (
 	"net/http"
 
-
 	"github.com/RomanosTrechlis/GoServer/server/logger"
 	"github.com/RomanosTrechlis/GoServer/server/util"
 )
@@ -11,13 +10,11 @@ import (
 var blogPath = "/blog/"
 
 func NewBlogHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Debug.Println(r.URL.Path)
 	p := CreateMarkdownPost()
 	util.RenderTemplate(w, "newPost", p)
 }
 
 func SaveNewBlogHandler(w http.ResponseWriter, r *http.Request) {
-	logger.Debug.Println(r.URL.Path)
 	p := BuildMarkdownPost(r)
 	err := p.Save()
 	if err != nil {
@@ -26,5 +23,3 @@ func SaveNewBlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, blogPath+p.Title, http.StatusFound)
 }
-
-
