@@ -90,21 +90,21 @@ func main() {
 	// routes
 	// for a wiki we need three base routes view, edit, save
 	mx.HandleFunc("/", blog.RootHandler)
-	mx.Handle("/wiki/view/", server.Adapt(wiki.MakeHandler(wiki.ViewHandler), wiki.WikiAdapter())) // test
+	mx.HandleFunc("/wiki/view/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.ViewHandler), admin.Logging())) // test
 	//mx.Handle("/wiki/view/", wiki.WikiAdapter()(wiki.MakeHandler(wiki.ViewHandler)))
-	mx.Handle("/wiki/edit/", wiki.MakeHandler(wiki.EditHandler))
-	mx.Handle("/wiki/save/", wiki.MakeHandler(wiki.SaveHandler))
+	mx.HandleFunc("/wiki/edit/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.EditHandler), admin.Logging()))
+	mx.HandleFunc("/wiki/save/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.SaveHandler), admin.Logging()))
 
-	mx.HandleFunc("/blog/", admin.Chain(blog.BlogHandler, admin.Logging()))
-	mx.HandleFunc("/blog/{^[a-zA-Z0-9_.-]*$}", admin.Chain(blog.BlogHandler, admin.Logging()))
+	mx.HandleFunc("/blog/", server.Chain(blog.BlogHandler, admin.Logging()))
+	mx.HandleFunc("/blog/{^[a-zA-Z0-9_.-]*$}", server.Chain(blog.BlogHandler, admin.Logging()))
 
-	mx.HandleFunc("/admin/blog/new/", admin.Chain(admin.NewBlogHandler, admin.Logging(), admin.Authenticate()))
-	mx.HandleFunc("/admin/blog/save/", admin.Chain(admin.SaveNewBlogHandler, admin.Logging(), admin.Authenticate()))
-	mx.HandleFunc("/admin/recache/", admin.Chain(admin.ReCacheHandler, admin.Logging(), admin.Authenticate()))
+	mx.HandleFunc("/admin/blog/new/", server.Chain(admin.NewBlogHandler, admin.Logging(), admin.Authenticate()))
+	mx.HandleFunc("/admin/blog/save/", server.Chain(admin.SaveNewBlogHandler, admin.Logging(), admin.Authenticate()))
+	mx.HandleFunc("/admin/recache/", server.Chain(admin.ReCacheHandler, admin.Logging(), admin.Authenticate()))
 
-	mx.HandleFunc("/login/", admin.Chain(admin.LoginGet, admin.Logging())).Methods("GET")
-	mx.HandleFunc("/login/", admin.Chain(admin.LoginPost, admin.Logging())).Methods("POST")
-	mx.HandleFunc("/logout/", admin.Chain(admin.Logout, admin.Logging()))
+	mx.HandleFunc("/login/", server.Chain(admin.LoginGet, admin.Logging())).Methods("GET")
+	mx.HandleFunc("/login/", server.Chain(admin.LoginPost, admin.Logging())).Methods("POST")
+	mx.HandleFunc("/logout/", server.Chain(admin.Logout, admin.Logging()))
 
 	// allows css and js to be imported into pages
 	mx.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))

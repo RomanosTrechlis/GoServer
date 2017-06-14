@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/RomanosTrechlis/GoServer/server/util"
-	"github.com/RomanosTrechlis/GoServer/server"
 	"github.com/RomanosTrechlis/GoServer/server/logger"
 )
 
@@ -48,7 +47,7 @@ func SaveHandler(w http.ResponseWriter, r *http.Request, title string) {
 }
 
 // wrapper function
-func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handler {
+func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logger.Debug.Println(r.URL.Path)
 		m := util.WikiValidPath.FindStringSubmatch(r.URL.Path)
@@ -59,19 +58,4 @@ func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 		}
 		fn(w, r, m[2])
 	})
-}
-
-func WikiAdapter() server.Adapter {
-	return func(h http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			logger.Debug.Println(r.URL.Path)
-			m := util.WikiValidPath.FindStringSubmatch(r.URL.Path)
-			if m == nil {
-				http.NotFound(w, r)
-				logger.Warning.Println("url not found")
-				return
-			}
-			h.ServeHTTP(w, r)
-		})
-	}
 }

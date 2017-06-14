@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/sessions"
 	"time"
 	"github.com/RomanosTrechlis/GoServer/server/logger"
+	"github.com/RomanosTrechlis/GoServer/server"
 )
 
 var (
@@ -22,14 +23,11 @@ type Error struct {
 	ErrorMessage string
 }
 
-type Middleware func(http.HandlerFunc) http.HandlerFunc
-
-func Authenticate() Middleware {
+func Authenticate() server.Middleware {
 	// Create a new Middleware
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		// Define the http.HandlerFunc
 		return func(w http.ResponseWriter, r *http.Request) {
-			logger.Info.Println("Auth")
 			// Do middleware things
 			session, _ := Store.Get(r, "cookie-name")
 			// Check if user is authenticated
@@ -43,7 +41,7 @@ func Authenticate() Middleware {
 	}
 }
 
-func Logging() Middleware {
+func Logging() server.Middleware {
 	// Create a new Middleware
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		// Define the http.HandlerFunc
@@ -56,12 +54,4 @@ func Logging() Middleware {
 			f(w, r)
 		}
 	}
-}
-
-// Chain applies middlewares to a http.HandlerFunc
-func Chain(f http.HandlerFunc, middlewares ...Middleware) http.HandlerFunc {
-	for _, m := range middlewares {
-		f = m(f)
-	}
-	return f
 }
