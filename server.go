@@ -19,21 +19,10 @@ import (
 	"errors"
 	"log"
 	"time"
+	"flag"
 )
 
 func initialize() {
-	/*path := os.Getwd() + "\\logs\\"
-	fileName := "temp.log"
-	file, err := os.OpenFile(path + fileName, os.O_RDONLY | os.O_CREATE, 0666)*/
-	logger.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
-	/*if err != nil {
-		logger.Warning.Println(err.Error())
-	}*/
-
-	// setting the configuration file
-	server.ConfigFileName = "config.json"
-	// load configuration and chache templates
-	util.LoadConfig(server.ConfigFileName, true)
 
 	db, err := bolt.Open("my.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
@@ -79,7 +68,53 @@ func initialize() {
 	}
 }
 
+func logInit() {
+	/*path := os.Getwd() + "\\logs\\"
+	fileName := "temp.log"
+	file, err := os.OpenFile(path + fileName, os.O_RDONLY | os.O_CREATE, 0666)*/
+	logger.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
+	/*if err != nil {
+		logger.Warning.Println(err.Error())
+	}*/
+}
+
+func confInit(useConfig bool, config string, txtTemplate string, htmlTemplate string, pages string, posts string) {
+	server.ConfigFileName = ""
+	if useConfig {
+		// setting the configuration file
+		server.ConfigFileName = config
+		// load configuration and chache templates
+	}
+	server.Config.Pages = pages
+	server.Config.Posts = posts
+	server.Config.Templates = htmlTemplate
+	server.Config.TextTemplates = txtTemplate
+
+	util.InitConfig(server.ConfigFileName, true)
+}
+
 func main() {
+	var (
+		httpAddr = flag.String("port", ":8080", "Address for HTTP server")
+		useConfig = flag.Bool("useConfig", false, "Use config file")
+		configFile = flag.String("config", "config.json", "Configuration file path")
+		txtTemplate = flag.String("textTemplate", "", "Text templates path")
+		htmlTemplate = flag.String("htmlTemplates", "", "HTML templates path")
+		pages = flag.String("pages", "", "Pages path")
+		posts = flag.String("posts", "", "Posts path")
+	)
+	flag.Parse()
+
+	logInit()
+	logger.Debug.Println(*httpAddr, *useConfig, *configFile, *txtTemplate, *htmlTemplate, *pages, *posts)
+	if !*useConfig {
+		if *txtTemplate == "" || *htmlTemplate == "" || *pages == "" || *posts == "" {
+			logger.Error.Println("Configuration paths haven't been provided.")
+			return
+		}
+	}
+
+	confInit(*useConfig, *configFile, *txtTemplate, *htmlTemplate, *pages, *posts)
 
 	initialize()
 
@@ -87,24 +122,24 @@ func main() {
 	// routes
 	// for a wiki we need three base routes view, edit, save
 	mx.HandleFunc("/", blog.RootHandler)
-	mx.HandleFunc("/wiki/view/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.ViewHandler), admin.Logging())) // test
+	mx.HandleFunc("/wiki/view/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.ViewHandler), logger.Logging())) // test
 	//mx.Handle("/wiki/view/", wiki.WikiAdapter()(wiki.MakeHandler(wiki.ViewHandler)))
-	mx.HandleFunc("/wiki/edit/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.EditHandler), admin.Logging()))
-	mx.HandleFunc("/wiki/save/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.SaveHandler), admin.Logging()))
+	mx.HandleFunc("/wiki/edit/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.EditHandler), logger.Logging()))
+	mx.HandleFunc("/wiki/save/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.SaveHandler), logger.Logging()))
 
-	mx.HandleFunc("/blog/", server.Chain(blog.BlogHandler, admin.Logging()))
-	mx.HandleFunc("/blog/{^[a-zA-Z0-9_.-]*$}", server.Chain(blog.BlogHandler, admin.Logging()))
+	mx.HandleFunc("/blog/", server.Chain(blog.BlogHandler, logger.Logging()))
+	mx.HandleFunc("/blog/{^[a-zA-Z0-9_.-]*$}", server.Chain(blog.BlogHandler, logger.Logging()))
 
-	mx.HandleFunc("/admin/blog/new/", server.Chain(admin.NewBlogHandler, admin.Authenticate(), admin.Logging()))
-	mx.HandleFunc("/admin/blog/save/", server.Chain(admin.SaveNewBlogHandler, admin.Authenticate(), admin.Logging()))
-	mx.HandleFunc("/admin/recache/", server.Chain(admin.ReCacheHandler, admin.Authenticate(), admin.Logging()))
+	mx.HandleFunc("/admin/blog/new/", server.Chain(admin.NewBlogHandler, admin.Authenticate(), logger.Logging()))
+	mx.HandleFunc("/admin/blog/save/", server.Chain(admin.SaveNewBlogHandler, admin.Authenticate(), logger.Logging()))
+	mx.HandleFunc("/admin/recache/", server.Chain(admin.ReCacheHandler, admin.Authenticate(), logger.Logging()))
 
-	mx.HandleFunc("/login/", server.Chain(admin.LoginGet, admin.Logging())).Methods("GET")
-	mx.HandleFunc("/login/", server.Chain(admin.LoginPost, admin.Logging())).Methods("POST")
-	mx.HandleFunc("/logout/", server.Chain(admin.Logout, admin.Logging()))
+	mx.HandleFunc("/login/", server.Chain(admin.LoginGet, logger.Logging())).Methods("GET")
+	mx.HandleFunc("/login/", server.Chain(admin.LoginPost, logger.Logging())).Methods("POST")
+	mx.HandleFunc("/logout/", server.Chain(admin.Logout, logger.Logging()))
 
 	// allows css and js to be imported into pages
 	mx.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
-	logger.Info.Println("Listening at port 8080...")
-	http.ListenAndServe(":8080", mx)
+	logger.Info.Println("Listening at port", *httpAddr, "...")
+	http.ListenAndServe(*httpAddr, mx)
 }

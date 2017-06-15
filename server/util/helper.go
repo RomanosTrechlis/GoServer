@@ -40,6 +40,16 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, p interface{}) {
 	}
 }
 
+func InitConfig(configPath string, loadTemplates bool) {
+	if configPath != "" {
+		LoadConfig(configPath, loadTemplates)
+	}
+	if !loadTemplates {
+		return
+	}
+	LoadTemplates()
+}
+
 func LoadConfig(configPath string, loadTemplates bool) {
 	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
@@ -51,10 +61,6 @@ func LoadConfig(configPath string, loadTemplates bool) {
 	if err != nil {
 		logger.Error.Println("Failed to parse json file.")
 	}
-	if !loadTemplates {
-		return
-	}
-	LoadTemplates()
 }
 
 func LoadTemplates() {

@@ -1,0 +1,1 @@
+GoServer.exe -textTemplate data/textTemplates/ -htmlTemplates data/templates/ -pages data/pages/ -posts data/posts/

@@ -2,10 +2,8 @@ package admin
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/RomanosTrechlis/GoServer/server"
-	"github.com/RomanosTrechlis/GoServer/server/logger"
 	"github.com/gorilla/sessions"
 )
 
@@ -32,21 +30,6 @@ func Authenticate() server.Middleware {
 				http.Redirect(w, r, "/login/", http.StatusFound)
 				return
 			}
-			f(w, r)
-		}
-	}
-}
-
-func Logging() server.Middleware {
-	// Create a new Middleware
-	return func(f http.HandlerFunc) http.HandlerFunc {
-		// Define the http.HandlerFunc
-		return func(w http.ResponseWriter, r *http.Request) {
-			// Do middleware things
-			start := time.Now()
-			defer func() { logger.Info.Println(r.URL.Path, time.Since(start)) }()
-
-			// Call the next middleware/handler in chain
 			f(w, r)
 		}
 	}

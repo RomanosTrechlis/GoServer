@@ -8,6 +8,7 @@ Web application server in golang.
 
 + goimports
 + limit function scope
++ add command flags for configuration
 
 ### v0.3.0
 
