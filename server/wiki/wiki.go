@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/RomanosTrechlis/GoServer/server/util"
 	"github.com/RomanosTrechlis/GoServer/server/logger"
+	"github.com/RomanosTrechlis/GoServer/server/util"
 )
 
 var viewPath = "/wiki/view/"
@@ -17,7 +17,7 @@ func ViewHandler(w http.ResponseWriter, r *http.Request, title string) {
 	p, err := LoadPage(title)
 	// if page doesn't exists it should redirect to the edit page
 	if err != nil {
-		http.Redirect(w, r, editPath + title, http.StatusFound)
+		http.Redirect(w, r, editPath+title, http.StatusFound)
 		return
 	}
 
@@ -43,7 +43,7 @@ func SaveHandler(w http.ResponseWriter, r *http.Request, title string) {
 		logger.Warning.Println("Error:", http.StatusInternalServerError)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	http.Redirect(w, r, viewPath + title, http.StatusFound)
+	http.Redirect(w, r, viewPath+title, http.StatusFound)
 }
 
 // wrapper function

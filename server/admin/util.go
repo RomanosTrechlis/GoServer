@@ -1,15 +1,16 @@
 package admin
 
 import (
+	"bytes"
 	"net/http"
 	"strings"
-	"bytes"
 	"time"
 
-	"github.com/RomanosTrechlis/GoServer/server/util"
-	"github.com/RomanosTrechlis/GoServer/server"
-	"os"
 	"io/ioutil"
+	"os"
+
+	"github.com/RomanosTrechlis/GoServer/server"
+	"github.com/RomanosTrechlis/GoServer/server/util"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,7 +22,7 @@ type MarkdownPost struct {
 func (p *MarkdownPost) Save() error {
 	os.Mkdir(server.Config.Posts, 0777)
 	filename := p.Title + ".md"
-	return ioutil.WriteFile(server.Config.Posts + filename, []byte(p.Post), 0600) // 0600 read write permissions
+	return ioutil.WriteFile(server.Config.Posts+filename, []byte(p.Post), 0600) // 0600 read write permissions
 }
 
 func BuildMarkdownPost(r *http.Request) *MarkdownPost {
@@ -39,7 +40,7 @@ func CreateMarkdownPost() *MarkdownPost {
 	util.TextTemplates.ExecuteTemplate(buf, "markdown.txt", p)
 	t := time.Now()
 	post := buf.String()
-	post = strings.Replace(post, "Date:", "Date: " + t.String(), -1)
+	post = strings.Replace(post, "Date:", "Date: "+t.String(), -1)
 	return &MarkdownPost{Title: "", Post: post}
 }
 

@@ -9,8 +9,8 @@ import (
 
 	"io/ioutil"
 
-	"github.com/RomanosTrechlis/GoServer/server/logger"
 	"github.com/RomanosTrechlis/GoServer/server"
+	"github.com/RomanosTrechlis/GoServer/server/logger"
 )
 
 var templatePath = "data/templates/"
@@ -19,7 +19,7 @@ var WikiValidPath = regexp.MustCompile(
 	"^/wiki/(edit|save|view)/([a-zA-Z0-9]+)$")
 
 var Templates = template.Must(template.ParseFiles(
-	templatePath + "edit.html", templatePath + "view.html", templatePath + "blog.html"))
+	templatePath+"edit.html", templatePath+"view.html", templatePath+"blog.html"))
 var TextTemplates = txtTemplate.Must(txtTemplate.ParseFiles(textTemplatePath + "post.html"))
 
 // validates path
@@ -33,7 +33,7 @@ func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string, p interface{}) {
-	err := Templates.ExecuteTemplate(w, tmpl + ".html", p)
+	err := Templates.ExecuteTemplate(w, tmpl+".html", p)
 	if err != nil {
 		logger.Warning.Println("Error:", http.StatusInternalServerError)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -61,5 +61,3 @@ func LoadTemplates() {
 	Templates = template.Must(template.ParseGlob(server.Config.Templates + "*"))
 	TextTemplates = txtTemplate.Must(txtTemplate.ParseGlob(server.Config.TextTemplates + "*"))
 }
-
-

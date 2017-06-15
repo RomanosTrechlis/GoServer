@@ -11,8 +11,9 @@ import (
 	"github.com/russross/blackfriday"
 
 	"regexp"
-	"github.com/RomanosTrechlis/GoServer/server/util"
+
 	"github.com/RomanosTrechlis/GoServer/server"
+	"github.com/RomanosTrechlis/GoServer/server/util"
 )
 
 type Blog struct {
@@ -80,7 +81,7 @@ func GetPostName(r *http.Request, regexp *regexp.Regexp) string {
 	if m == nil {
 		title = ""
 	} else {
-		title = m[len(m) - 1]
+		title = m[len(m)-1]
 	}
 	return title
 }

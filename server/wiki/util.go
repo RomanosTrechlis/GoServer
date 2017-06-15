@@ -1,10 +1,11 @@
 package wiki
 
 import (
-	"io/ioutil"
 	"html/template"
-	"github.com/RomanosTrechlis/GoServer/server"
+	"io/ioutil"
 	"os"
+
+	"github.com/RomanosTrechlis/GoServer/server"
 )
 
 type Page struct {
@@ -25,7 +26,5 @@ func LoadPage(title string) (*Page, error) {
 func (p *Page) Save() error {
 	os.Mkdir(server.Config.Pages, 0777)
 	filename := p.Title + ".txt"
-	return ioutil.WriteFile(server.Config.Pages + filename, p.Body, 0600) // 0600 read write permissions
+	return ioutil.WriteFile(server.Config.Pages+filename, p.Body, 0600) // 0600 read write permissions
 }
-
-

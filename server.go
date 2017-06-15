@@ -6,21 +6,20 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/RomanosTrechlis/GoServer/server"
 	"github.com/RomanosTrechlis/GoServer/server/admin"
 	"github.com/RomanosTrechlis/GoServer/server/blog"
 	"github.com/RomanosTrechlis/GoServer/server/logger"
 	"github.com/RomanosTrechlis/GoServer/server/util"
 	"github.com/RomanosTrechlis/GoServer/server/wiki"
-	"github.com/RomanosTrechlis/GoServer/server"
 
 	"github.com/boltdb/bolt"
 	"github.com/gorilla/mux"
 
-	"time"
-	"log"
 	"errors"
+	"log"
+	"time"
 )
-
 
 func initialize() {
 	/*path := os.Getwd() + "\\logs\\"
@@ -81,8 +80,6 @@ func initialize() {
 }
 
 func main() {
-
-
 
 	initialize()
 
