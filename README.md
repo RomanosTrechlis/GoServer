@@ -4,6 +4,10 @@ Web application server in golang.
 
 ## 0. Change Log
 
+### v0.3.1
+
++ goimports
+
 ### v0.3.0
 
 + authentication with cookies
