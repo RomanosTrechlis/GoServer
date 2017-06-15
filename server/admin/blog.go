@@ -10,7 +10,7 @@ import (
 var blogPath = "/blog/"
 
 func NewBlogHandler(w http.ResponseWriter, r *http.Request) {
-	p := CreateMarkdownPost()
+	p := createMarkdownPost()
 	util.RenderTemplate(w, "newPost", p)
 }
 

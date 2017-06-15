@@ -16,13 +16,13 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 
 	// Authentication goes here
 	r.ParseForm()
-	user := User{}
+	user := user{}
 	user.Username = r.PostForm.Get("username")
 	user.Password = r.PostForm.Get("password")
 	logger.Debug.Println("username: ", user.Username)
-	password, _ := HashPassword("password")
+	password, _ := hashPassword("password")
 
-	if !CheckPasswordHash(user.Password, password) {
+	if !checkPasswordHash(user.Password, password) {
 		util.Templates.ExecuteTemplate(w, "login.html", Error{ErrorMessage: "Please enter the correct username and password."})
 		return
 	}

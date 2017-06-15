@@ -15,11 +15,6 @@ var (
 	store = sessions.NewCookieStore(key)
 )
 
-type User struct {
-	Username string
-	Password string
-}
-
 type Error struct {
 	ErrorMessage string
 }
