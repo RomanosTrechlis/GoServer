@@ -5,10 +5,10 @@ import (
 	"net/http"
 )
 
-var Config = Configuration{}
+var Config = configuration{}
 var ConfigFileName = "config.json"
 
-type Configuration struct {
+type configuration struct {
 	TextTemplates string `json:"TextTemplates`
 	Templates     string `json:"Templates`
 	Pages         string `json:"Pages`
@@ -16,7 +16,7 @@ type Configuration struct {
 }
 
 // ParseJSON unmarshals bytes to structs
-func (c *Configuration) ParseJSON(b []byte) error {
+func (c *configuration) ParseJSON(b []byte) error {
 	return json.Unmarshal(b, &c)
 }
 

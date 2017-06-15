@@ -16,11 +16,11 @@ import (
 	"github.com/RomanosTrechlis/GoServer/server/util"
 )
 
-type Blog struct {
+type blog struct {
 	Blog template.HTML
 }
 
-type Post struct {
+type post struct {
 	Title   string
 	Date    string
 	Summary string
@@ -31,9 +31,9 @@ type Post struct {
 var BlogValidPath = regexp.MustCompile(
 	"^/blog/([a-zA-Z0-9_]+)$")
 
-func GetPosts(r *http.Request) []Post {
-	title := GetPostName(r, BlogValidPath)
-	a := []Post{}
+func getPosts(r *http.Request) []post {
+	title := getPostName(r, BlogValidPath)
+	a := []post{}
 	fileName := title + ".md"
 	if title == "" {
 		fileName = "*"
@@ -41,12 +41,12 @@ func GetPosts(r *http.Request) []Post {
 
 	files, _ := filepath.Glob(server.Config.Posts + fileName)
 	for _, f := range files {
-		a = GetBlogPost(f, a)
+		a = getBlogPost(f, a)
 	}
 	return a
 }
 
-func GetBlogPost(f string, a []Post) []Post {
+func getBlogPost(f string, a []post) []post {
 	postsPath := strings.Replace(server.Config.Posts, "/", "\\", -1)
 	file := strings.Replace(f, postsPath, "", -1)
 	file = strings.Replace(file, ".md", "", -1)
@@ -61,21 +61,21 @@ func GetBlogPost(f string, a []Post) []Post {
 	}
 	bodyString := strings.Join(lines[lineNumber:len(lines)], "\n")
 	body := template.HTML(blackfriday.MarkdownCommon([]byte(bodyString)))
-	a = append(a, Post{title, date, summary, body, file})
+	a = append(a, post{title, date, summary, body, file})
 	return a
 }
 
-func BuildBlog(r *http.Request) *Blog {
-	posts := GetPosts(r)
+func buildBlog(r *http.Request) *blog {
+	posts := getPosts(r)
 	var blogHtml string
 	buf := bytes.NewBufferString(blogHtml)
 	for i := 0; i < len(posts); i++ {
 		util.TextTemplates.ExecuteTemplate(buf, "post.html", posts[i])
 	}
-	return &Blog{Blog: template.HTML(buf.String())}
+	return &blog{Blog: template.HTML(buf.String())}
 }
 
-func GetPostName(r *http.Request, regexp *regexp.Regexp) string {
+func getPostName(r *http.Request, regexp *regexp.Regexp) string {
 	m := regexp.FindStringSubmatch(r.URL.Path)
 	var title string
 	if m == nil {

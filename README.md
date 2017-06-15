@@ -7,6 +7,7 @@ Web application server in golang.
 ### v0.3.1
 
 + goimports
++ limit function scope
 
 ### v0.3.0
 

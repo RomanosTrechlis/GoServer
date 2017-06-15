@@ -12,7 +12,7 @@ func LoginGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginPost(w http.ResponseWriter, r *http.Request) {
-	session, _ := Store.Get(r, "cookie-name")
+	session, _ := store.Get(r, "cookie-name")
 
 	// Authentication goes here
 	r.ParseForm()
@@ -34,7 +34,7 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
-	session, _ := Store.Get(r, "cookie-name")
+	session, _ := store.Get(r, "cookie-name")
 
 	// Revoke users authentication
 	session.Values["authenticated"] = false

@@ -7,7 +7,7 @@ import (
 )
 
 func BlogHandler(w http.ResponseWriter, r *http.Request) {
-	util.Templates.ExecuteTemplate(w, "blog.html", BuildBlog(r))
+	util.Templates.ExecuteTemplate(w, "blog.html", buildBlog(r))
 }
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {

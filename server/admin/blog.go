@@ -15,8 +15,8 @@ func NewBlogHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SaveNewBlogHandler(w http.ResponseWriter, r *http.Request) {
-	p := BuildMarkdownPost(r)
-	err := p.Save()
+	p := buildMarkdownPost(r)
+	err := p.save()
 	if err != nil {
 		logger.Warning.Println("Error:", http.StatusInternalServerError)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

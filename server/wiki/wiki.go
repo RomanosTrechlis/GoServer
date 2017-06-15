@@ -14,7 +14,7 @@ var savePath = "/wiki/save/"
 
 //  handle URLs prefixed with "/view/"
 func ViewHandler(w http.ResponseWriter, r *http.Request, title string) {
-	p, err := LoadPage(title)
+	p, err := loadPage(title)
 	// if page doesn't exists it should redirect to the edit page
 	if err != nil {
 		http.Redirect(w, r, editPath+title, http.StatusFound)
@@ -27,9 +27,9 @@ func ViewHandler(w http.ResponseWriter, r *http.Request, title string) {
 
 //  handle URLs prefixed with "/edit/"
 func EditHandler(w http.ResponseWriter, r *http.Request, title string) {
-	p, err := LoadPage(title)
+	p, err := loadPage(title)
 	if err != nil {
-		p = &Page{Title: title}
+		p = &page{Title: title}
 	}
 	util.RenderTemplate(w, "edit", p)
 }
@@ -37,8 +37,8 @@ func EditHandler(w http.ResponseWriter, r *http.Request, title string) {
 //  handle URLs prefixed with "/save/"
 func SaveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	body := r.FormValue("body")
-	p := &Page{Title: title, Body: []byte(body)}
-	err := p.Save()
+	p := &page{Title: title, Body: []byte(body)}
+	err := p.save()
 	if err != nil {
 		logger.Warning.Println("Error:", http.StatusInternalServerError)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

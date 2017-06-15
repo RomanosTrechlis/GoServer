@@ -19,13 +19,13 @@ type MarkdownPost struct {
 	Post  string
 }
 
-func (p *MarkdownPost) Save() error {
+func (p *MarkdownPost) save() error {
 	os.Mkdir(server.Config.Posts, 0777)
 	filename := p.Title + ".md"
 	return ioutil.WriteFile(server.Config.Posts+filename, []byte(p.Post), 0600) // 0600 read write permissions
 }
 
-func BuildMarkdownPost(r *http.Request) *MarkdownPost {
+func buildMarkdownPost(r *http.Request) *MarkdownPost {
 	post := r.FormValue("post")
 	lines := strings.Split(post, "\r\n")
 	title := strings.Replace(string(lines[0]), "Title: ", "", -1)
