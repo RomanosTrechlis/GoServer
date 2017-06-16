@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/RomanosTrechlis/GoServer/server"
-	"github.com/RomanosTrechlis/GoServer/server/admin"
-	"github.com/RomanosTrechlis/GoServer/server/blog"
-	"github.com/RomanosTrechlis/GoServer/server/logger"
-	"github.com/RomanosTrechlis/GoServer/server/util"
-	"github.com/RomanosTrechlis/GoServer/server/wiki"
+	r "github.com/RomanosTrechlis/GoServer/web/restricted"
+	"github.com/RomanosTrechlis/GoServer/web/public/blog"
+	"github.com/RomanosTrechlis/GoServer/logger"
+	c "github.com/RomanosTrechlis/GoServer/util/conf"
+	m "github.com/RomanosTrechlis/GoServer/util/middleware"
+	"github.com/RomanosTrechlis/GoServer/web/public/wiki"
 
 	"github.com/boltdb/bolt"
 	"github.com/gorilla/mux"
@@ -79,18 +79,18 @@ func logInit() {
 }
 
 func confInit(useConfig bool, config string, txtTemplate string, htmlTemplate string, pages string, posts string) {
-	server.ConfigFileName = ""
+	c.ConfigFileName = ""
 	if useConfig {
 		// setting the configuration file
-		server.ConfigFileName = config
+		c.ConfigFileName = config
 		// load configuration and chache templates
 	}
-	server.Config.Pages = pages
-	server.Config.Posts = posts
-	server.Config.Templates = htmlTemplate
-	server.Config.TextTemplates = txtTemplate
+	c.Config.Pages = pages
+	c.Config.Posts = posts
+	c.Config.Templates = htmlTemplate
+	c.Config.TextTemplates = txtTemplate
 
-	util.InitConfig(server.ConfigFileName, true)
+	c.InitConfig(c.ConfigFileName, true)
 }
 
 func main() {
@@ -122,21 +122,21 @@ func main() {
 	// routes
 	// for a wiki we need three base routes view, edit, save
 	mx.HandleFunc("/", blog.RootHandler)
-	mx.HandleFunc("/wiki/view/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.ViewHandler), logger.Logging())) // test
+	mx.HandleFunc("/wiki/view/{^[a-zA-Z0-9_.-]*$}", m.Chain(wiki.MakeHandler(wiki.ViewHandler), m.Logging())) // test
 	//mx.Handle("/wiki/view/", wiki.WikiAdapter()(wiki.MakeHandler(wiki.ViewHandler)))
-	mx.HandleFunc("/wiki/edit/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.EditHandler), logger.Logging()))
-	mx.HandleFunc("/wiki/save/{^[a-zA-Z0-9_.-]*$}", server.Chain(wiki.MakeHandler(wiki.SaveHandler), logger.Logging()))
+	mx.HandleFunc("/wiki/edit/{^[a-zA-Z0-9_.-]*$}", m.Chain(wiki.MakeHandler(wiki.EditHandler), m.Logging()))
+	mx.HandleFunc("/wiki/save/{^[a-zA-Z0-9_.-]*$}", m.Chain(wiki.MakeHandler(wiki.SaveHandler), m.Logging()))
 
-	mx.HandleFunc("/blog/", server.Chain(blog.BlogHandler, logger.Logging()))
-	mx.HandleFunc("/blog/{^[a-zA-Z0-9_.-]*$}", server.Chain(blog.BlogHandler, logger.Logging()))
+	mx.HandleFunc("/blog/", m.Chain(blog.BlogHandler, m.Logging()))
+	mx.HandleFunc("/blog/{^[a-zA-Z0-9_.-]*$}", m.Chain(blog.BlogHandler, m.Logging()))
 
-	mx.HandleFunc("/admin/blog/new/", server.Chain(admin.NewBlogHandler, admin.Authenticate(), logger.Logging()))
-	mx.HandleFunc("/admin/blog/save/", server.Chain(admin.SaveNewBlogHandler, admin.Authenticate(), logger.Logging()))
-	mx.HandleFunc("/admin/recache/", server.Chain(admin.ReCacheHandler, admin.Authenticate(), logger.Logging()))
+	mx.HandleFunc("/admin/blog/new/", m.Chain(r.NewBlogHandler, r.Authenticate(), m.Logging()))
+	mx.HandleFunc("/admin/blog/save/", m.Chain(r.SaveNewBlogHandler, r.Authenticate(), m.Logging()))
+	mx.HandleFunc("/admin/recache/", m.Chain(r.ReCacheHandler, r.Authenticate(), m.Logging()))
 
-	mx.HandleFunc("/login/", server.Chain(admin.LoginGet, logger.Logging())).Methods("GET")
-	mx.HandleFunc("/login/", server.Chain(admin.LoginPost, logger.Logging())).Methods("POST")
-	mx.HandleFunc("/logout/", server.Chain(admin.Logout, logger.Logging()))
+	mx.HandleFunc("/login/", m.Chain(r.LoginGet, m.Logging())).Methods("GET")
+	mx.HandleFunc("/login/", m.Chain(r.LoginPost, m.Logging())).Methods("POST")
+	mx.HandleFunc("/logout/", m.Chain(r.Logout, m.Logging()))
 
 	// allows css and js to be imported into pages
 	mx.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))

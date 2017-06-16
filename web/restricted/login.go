@@ -1,14 +1,14 @@
-package admin
+package restricted
 
 import (
 	"net/http"
 
-	"github.com/RomanosTrechlis/GoServer/server/logger"
-	"github.com/RomanosTrechlis/GoServer/server/util"
+	"github.com/RomanosTrechlis/GoServer/logger"
+	c "github.com/RomanosTrechlis/GoServer/util/conf"
 )
 
 func LoginGet(w http.ResponseWriter, r *http.Request) {
-	util.Templates.ExecuteTemplate(w, "login.html", nil)
+	c.Templates.ExecuteTemplate(w, "login.html", nil)
 }
 
 func LoginPost(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +23,7 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 	password, _ := hashPassword("password")
 
 	if !checkPasswordHash(user.Password, password) {
-		util.Templates.ExecuteTemplate(w, "login.html", Error{ErrorMessage: "Please enter the correct username and password."})
+		c.Templates.ExecuteTemplate(w, "login.html", Error{ErrorMessage: "Please enter the correct username and password."})
 		return
 	}
 

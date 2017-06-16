@@ -1,9 +1,9 @@
-package admin
+package restricted
 
 import (
 	"net/http"
 
-	"github.com/RomanosTrechlis/GoServer/server"
+	"github.com/RomanosTrechlis/GoServer/util/middleware"
 	"github.com/gorilla/sessions"
 )
 
@@ -17,7 +17,7 @@ type Error struct {
 	ErrorMessage string
 }
 
-func Authenticate() server.Middleware {
+func Authenticate() middleware.Middleware {
 	// Create a new Middleware
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		// Define the http.HandlerFunc

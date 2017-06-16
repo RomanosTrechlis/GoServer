@@ -9,6 +9,8 @@ Web application server in golang.
 + goimports
 + limit function scope
 + add command flags for configuration
++ package restructure
++ add doc.go for godoc cmd
 
 ### v0.3.0
 

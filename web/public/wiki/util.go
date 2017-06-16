@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/RomanosTrechlis/GoServer/server"
+	c "github.com/RomanosTrechlis/GoServer/util/conf"
 )
 
 type page struct {
@@ -15,7 +15,7 @@ type page struct {
 }
 
 func loadPage(title string) (*page, error) {
-	filename := server.Config.Pages + title + ".txt"
+	filename := c.Config.Pages + title + ".txt"
 	body, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func loadPage(title string) (*page, error) {
 }
 
 func (p *page) save() error {
-	os.Mkdir(server.Config.Pages, 0777)
+	os.Mkdir(c.Config.Pages, 0777)
 	filename := p.Title + ".txt"
-	return ioutil.WriteFile(server.Config.Pages+filename, p.Body, 0600) // 0600 read write permissions
+	return ioutil.WriteFile(c.Config.Pages+filename, p.Body, 0600) // 0600 read write permissions
 }

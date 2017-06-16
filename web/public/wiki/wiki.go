@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/RomanosTrechlis/GoServer/server/logger"
-	"github.com/RomanosTrechlis/GoServer/server/util"
+	"github.com/RomanosTrechlis/GoServer/logger"
+	rend "github.com/RomanosTrechlis/GoServer/util/renderer"
 )
 
 var viewPath = "/wiki/view/"
@@ -22,7 +22,7 @@ func ViewHandler(w http.ResponseWriter, r *http.Request, title string) {
 	}
 
 	p.DisplayBody = template.HTML(string(p.Body)) // make it display html
-	util.RenderTemplate(w, "view", p)
+	rend.RenderTemplate(w, "view", p)
 }
 
 //  handle URLs prefixed with "/edit/"
@@ -31,7 +31,7 @@ func EditHandler(w http.ResponseWriter, r *http.Request, title string) {
 	if err != nil {
 		p = &page{Title: title}
 	}
-	util.RenderTemplate(w, "edit", p)
+	rend.RenderTemplate(w, "edit", p)
 }
 
 //  handle URLs prefixed with "/save/"
@@ -50,7 +50,7 @@ func SaveHandler(w http.ResponseWriter, r *http.Request, title string) {
 func MakeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logger.Debug.Println(r.URL.Path)
-		m := util.WikiValidPath.FindStringSubmatch(r.URL.Path)
+		m := rend.WikiValidPath.FindStringSubmatch(r.URL.Path)
 		if m == nil {
 			http.NotFound(w, r)
 			logger.Warning.Println("url not found")

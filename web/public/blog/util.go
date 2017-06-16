@@ -12,8 +12,7 @@ import (
 
 	"regexp"
 
-	"github.com/RomanosTrechlis/GoServer/server"
-	"github.com/RomanosTrechlis/GoServer/server/util"
+	c "github.com/RomanosTrechlis/GoServer/util/conf"
 )
 
 type blog struct {
@@ -39,7 +38,7 @@ func getPosts(r *http.Request) []post {
 		fileName = "*"
 	}
 
-	files, _ := filepath.Glob(server.Config.Posts + fileName)
+	files, _ := filepath.Glob(c.Config.Posts + fileName)
 	for _, f := range files {
 		a = getBlogPost(f, a)
 	}
@@ -47,7 +46,7 @@ func getPosts(r *http.Request) []post {
 }
 
 func getBlogPost(f string, a []post) []post {
-	postsPath := strings.Replace(server.Config.Posts, "/", "\\", -1)
+	postsPath := strings.Replace(c.Config.Posts, "/", "\\", -1)
 	file := strings.Replace(f, postsPath, "", -1)
 	file = strings.Replace(file, ".md", "", -1)
 	fileRead, _ := ioutil.ReadFile(f)
@@ -70,7 +69,7 @@ func buildBlog(r *http.Request) *blog {
 	var blogHtml string
 	buf := bytes.NewBufferString(blogHtml)
 	for i := 0; i < len(posts); i++ {
-		util.TextTemplates.ExecuteTemplate(buf, "post.html", posts[i])
+		c.TextTemplates.ExecuteTemplate(buf, "post.html", posts[i])
 	}
 	return &blog{Blog: template.HTML(buf.String())}
 }

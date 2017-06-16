@@ -1,17 +1,17 @@
-package admin
+package restricted
 
 import (
 	"net/http"
 
-	"github.com/RomanosTrechlis/GoServer/server/logger"
-	"github.com/RomanosTrechlis/GoServer/server/util"
+	"github.com/RomanosTrechlis/GoServer/logger"
+	rend "github.com/RomanosTrechlis/GoServer/util/renderer"
 )
 
 var blogPath = "/blog/"
 
 func NewBlogHandler(w http.ResponseWriter, r *http.Request) {
 	p := createMarkdownPost()
-	util.RenderTemplate(w, "newPost", p)
+	rend.RenderTemplate(w, "newPost", p)
 }
 
 func SaveNewBlogHandler(w http.ResponseWriter, r *http.Request) {

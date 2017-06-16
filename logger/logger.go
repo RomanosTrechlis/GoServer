@@ -3,9 +3,6 @@ package logger
 import (
 	"io"
 	"log"
-	"github.com/RomanosTrechlis/GoServer/server"
-	"net/http"
-	"time"
 )
 
 var (
@@ -42,19 +39,4 @@ func Init(
 	Error = log.New(errorHandle,
 		"ERROR: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
-}
-
-func Logging() server.Middleware {
-	// Create a new Middleware
-	return func(f http.HandlerFunc) http.HandlerFunc {
-		// Define the http.HandlerFunc
-		return func(w http.ResponseWriter, r *http.Request) {
-			// Do middleware things
-			start := time.Now()
-			defer func() { Info.Println(r.URL.Path, time.Since(start)) }()
-
-			// Call the next middleware/handler in chain
-			f(w, r)
-		}
-	}
 }

@@ -3,11 +3,11 @@ package blog
 import (
 	"net/http"
 
-	"github.com/RomanosTrechlis/GoServer/server/util"
+	c "github.com/RomanosTrechlis/GoServer/util/conf"
 )
 
 func BlogHandler(w http.ResponseWriter, r *http.Request) {
-	util.Templates.ExecuteTemplate(w, "blog.html", buildBlog(r))
+	c.Templates.ExecuteTemplate(w, "blog.html", buildBlog(r))
 }
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {

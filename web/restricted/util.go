@@ -1,4 +1,4 @@
-package admin
+package restricted
 
 import (
 	"bytes"
@@ -9,8 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/RomanosTrechlis/GoServer/server"
-	"github.com/RomanosTrechlis/GoServer/server/util"
+	c "github.com/RomanosTrechlis/GoServer/util/conf"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -25,9 +24,9 @@ type user struct {
 }
 
 func (p *markdownPost) save() error {
-	os.Mkdir(server.Config.Posts, 0777)
+	os.Mkdir(c.Config.Posts, 0777)
 	filename := p.Title + ".md"
-	return ioutil.WriteFile(server.Config.Posts+filename, []byte(p.Post), 0600) // 0600 read write permissions
+	return ioutil.WriteFile(c.Config.Posts+filename, []byte(p.Post), 0600) // 0600 read write permissions
 }
 
 func buildMarkdownPost(r *http.Request) *markdownPost {
@@ -42,7 +41,7 @@ func createMarkdownPost() *markdownPost {
 	var temp string
 	buf := bytes.NewBufferString(temp)
 	p := &markdownPost{Title: ""}
-	util.TextTemplates.ExecuteTemplate(buf, "markdown.txt", p)
+	c.TextTemplates.ExecuteTemplate(buf, "markdown.txt", p)
 	t := time.Now()
 	post := buf.String()
 	post = strings.Replace(post, "Date:", "Date: "+t.String(), -1)
